@@ -1,4 +1,8 @@
+import 'dart:typed_data';
+
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 void main() {
   runApp(const MyApp());
@@ -22,7 +26,9 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
+  
   const MyHomePage({super.key, required this.title});
+  
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -41,6 +47,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  final storage = FirebaseStorage.instanceFor(bucket: "gs://myparty-1cacb.appspot.com");
 
   void _incrementCounter() {
     setState(() {
@@ -51,6 +58,21 @@ class _MyHomePageState extends State<MyHomePage> {
       // called again, and so nothing would appear to happen.
       _counter++;
     });
+  }
+
+
+  void insertStorrage() async {
+
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+
+    if(image != null){
+      Uint8List imageData = await image.readAsBytes();
+
+      print("mi imagen listado");
+
+      print(image.toString());
+    }
   }
 
   @override
@@ -97,6 +119,10 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
+            
+            TextButton(
+              onPressed: insertStorrage,
+              child: const Text("Guasrdar en storage"),),
           ],
         ),
       ),
